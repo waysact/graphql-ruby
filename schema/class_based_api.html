@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-      <title>GraphQL - Class-based API</title>
+      <title>GraphQL - Class-based API Migration</title>
     
     <link href="https://fonts.googleapis.com/css?family=Rubik:300,400" rel="stylesheet" />
     <link rel="stylesheet" href="/css/main.css">
@@ -19,10 +19,10 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.8.11/">API</a>
+          <a href="/api-doc/1.10.6/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
-          <a href="http://graphql.pro">Upgrade to Pro</a>
+          <a href="https://graphql.pro">Upgrade to Pro</a>
           <input
             class="search-input"
             onkeyup="GraphQLRubySearch.run(this)"
@@ -41,24 +41,15 @@
   <a href="/">GraphQL</a>
   &raquo; <a href="/guides">Guides</a>
    &raquo; <a href="/guides#schema-guides">Schema</a>
-  &raquo; Class-based API
+  &raquo; Class-based API Migration
 </p>
 
 
-  <div class="class-based-header">
-    <p>
-      <strong>⚠ New Class-Based API ⚠</strong>
-    </p>
-    <p>
-      This describes a new API in <code>v1.8.0</code>.
-      Check the <a href="/schema/class_based_api">upgrade notes</a> for more info.
-    </p>
-  </div>
-
-
-<h1 class="guide-header">Class-based API</h1>
+<h1 class="guide-header">Class-based API Migration</h1>
 <div class="guide-container">
   <p>In GraphQL <code class="highlighter-rouge">1.8</code>+, you can use Ruby classes to build your schema. You can <strong>mix</strong> class-style and <code class="highlighter-rouge">.define</code>-style type definitions in a schema.</p>
+
+<p>The <code class="highlighter-rouge">.define</code> DSL is deprecated and will be removed at version 2.0.</p>
 
 <p>You can get an overview of this new feature:</p>
 
@@ -104,6 +95,10 @@
 </ul>
 
 <p>See sections below for specific information about each schema definition class.</p>
+
+<h3 id="️-heads-up-️">⚠️ Heads up ⚠️</h3>
+
+<p>Keep in mind that class based Schemas will be initialized at execution time instead of application boot, depending on the size of your schema, this could result in request timeouts for your users after your application restarts. For a workaround please check https://github.com/rmosolgo/graphql-ruby/issues/2034</p>
 
 <h3 id="type-instances">Type Instances</h3>
 
@@ -232,7 +227,7 @@
 <span class="no">File</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="s2">"path/to/type.rb"</span><span class="p">,</span> <span class="n">transformed_source</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>In this custom code, you can pass some keywords to <a href="/api-doc/1.8.11/GraphQL/Upgrader/Member#new-class_method" target="_blank" title="API docs for GraphQL::Upgrader::Member.new"><code>GraphQL::Upgrader::Member.new</code></a>:</p>
+<p>In this custom code, you can pass some keywords to <a href="/api-doc/1.10.6/GraphQL/Upgrader/Member#new-class_method" target="_blank" title="API docs for GraphQL::Upgrader::Member.new"><code>GraphQL::Upgrader::Member.new</code></a>:</p>
 
 <ul>
   <li><code class="highlighter-rouge">type_transforms:</code> Applied to the source code as a whole, applied first</li>
@@ -277,7 +272,7 @@
   <li>An object which responds to <code class="highlighter-rouge">.apply(input_text)</code> and returns the transformed code</li>
 </ul>
 
-<p>The library provides a <a href="/api-doc/1.8.11/GraphQL/Upgrader/Transform" target="_blank" title="API docs for GraphQL::Upgrader::Transform"><code>GraphQL::Upgrader::Transform</code></a> base class with a few convenience methods. You can also customize the built-in transformers listed below.</p>
+<p>The library provides a <a href="/api-doc/1.10.6/GraphQL/Upgrader/Transform" target="_blank" title="API docs for GraphQL::Upgrader::Transform"><code>GraphQL::Upgrader::Transform</code></a> base class with a few convenience methods. You can also customize the built-in transformers listed below.</p>
 
 <p>For example, here’s a transform which rewrites type definitions from a <code class="highlighter-rouge">model_type(model) do ... end</code> factory method to the class-based syntax:</p>
 
@@ -303,32 +298,32 @@
 
 <p>Follow links to the API doc to read the source of each transform:</p>
 
-<p>Type transforms (<a href="/api-doc/1.8.11/GraphQL/Upgrader/Member/DEFAULT_TYPE_TRANSFORMS" target="_blank" title="API docs for GraphQL::Upgrader::Member::DEFAULT_TYPE_TRANSFORMS"><code>GraphQL::Upgrader::Member::DEFAULT_TYPE_TRANSFORMS</code></a>):</p>
+<p>Type transforms (<a href="/api-doc/1.10.6/GraphQL/Upgrader/Member/DEFAULT_TYPE_TRANSFORMS" target="_blank" title="API docs for GraphQL::Upgrader::Member::DEFAULT_TYPE_TRANSFORMS"><code>GraphQL::Upgrader::Member::DEFAULT_TYPE_TRANSFORMS</code></a>):</p>
 
 <ul>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/Transform" target="_blank" title="API docs for GraphQL::Upgrader::Transform"><code>GraphQL::Upgrader::Transform</code></a> base class, provides a <code class="highlighter-rouge">normalize_type_expression</code> helper</li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/TypeDefineToClassTransform" target="_blank" title="API docs for GraphQL::Upgrader::TypeDefineToClassTransform"><code>GraphQL::Upgrader::TypeDefineToClassTransform</code></a> turns <code class="highlighter-rouge">.define</code> into <code class="highlighter-rouge">class ...</code> with a regexp substitution</li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/NameTransform" target="_blank" title="API docs for GraphQL::Upgrader::NameTransform"><code>GraphQL::Upgrader::NameTransform</code></a> takes <code class="highlighter-rouge">name "..."</code> and removes it if it’s redundant, or converts it to <code class="highlighter-rouge">graphql_name "..."</code></li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/InterfacesToImplementsTransform" target="_blank" title="API docs for GraphQL::Upgrader::InterfacesToImplementsTransform"><code>GraphQL::Upgrader::InterfacesToImplementsTransform</code></a> turns <code class="highlighter-rouge">interfaces [A, B...]</code> into <code class="highlighter-rouge">implements(A)\nimplements(B)...</code></li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/Transform" target="_blank" title="API docs for GraphQL::Upgrader::Transform"><code>GraphQL::Upgrader::Transform</code></a> base class, provides a <code class="highlighter-rouge">normalize_type_expression</code> helper</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/TypeDefineToClassTransform" target="_blank" title="API docs for GraphQL::Upgrader::TypeDefineToClassTransform"><code>GraphQL::Upgrader::TypeDefineToClassTransform</code></a> turns <code class="highlighter-rouge">.define</code> into <code class="highlighter-rouge">class ...</code> with a regexp substitution</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/NameTransform" target="_blank" title="API docs for GraphQL::Upgrader::NameTransform"><code>GraphQL::Upgrader::NameTransform</code></a> takes <code class="highlighter-rouge">name "..."</code> and removes it if it’s redundant, or converts it to <code class="highlighter-rouge">graphql_name "..."</code></li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/InterfacesToImplementsTransform" target="_blank" title="API docs for GraphQL::Upgrader::InterfacesToImplementsTransform"><code>GraphQL::Upgrader::InterfacesToImplementsTransform</code></a> turns <code class="highlighter-rouge">interfaces [A, B...]</code> into <code class="highlighter-rouge">implements(A)\nimplements(B)...</code></li>
 </ul>
 
-<p>Field transforms (<a href="/api-doc/1.8.11/GraphQL/Upgrader/Member/DEFAULT_FIELD_TRANSFORMS" target="_blank" title="API docs for GraphQL::Upgrader::Member::DEFAULT_FIELD_TRANSFORMS"><code>GraphQL::Upgrader::Member::DEFAULT_FIELD_TRANSFORMS</code></a>):</p>
+<p>Field transforms (<a href="/api-doc/1.10.6/GraphQL/Upgrader/Member/DEFAULT_FIELD_TRANSFORMS" target="_blank" title="API docs for GraphQL::Upgrader::Member::DEFAULT_FIELD_TRANSFORMS"><code>GraphQL::Upgrader::Member::DEFAULT_FIELD_TRANSFORMS</code></a>):</p>
 
 <ul>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/RemoveNewlinesTransform" target="_blank" title="API docs for GraphQL::Upgrader::RemoveNewlinesTransform"><code>GraphQL::Upgrader::RemoveNewlinesTransform</code></a> removes newlines from field definitions to normalize them</li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/PositionalTypeArgTransform" target="_blank" title="API docs for GraphQL::Upgrader::PositionalTypeArgTransform"><code>GraphQL::Upgrader::PositionalTypeArgTransform</code></a> moves <code class="highlighter-rouge">type X</code> from the <code class="highlighter-rouge">do ... end</code> block into a positional argument, to normalize the definition</li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/ConfigurationToKwargTransform" target="_blank" title="API docs for GraphQL::Upgrader::ConfigurationToKwargTransform"><code>GraphQL::Upgrader::ConfigurationToKwargTransform</code></a> moves a <code class="highlighter-rouge">do ... end</code> configuration to a keyword argument. By default, this is used for <code class="highlighter-rouge">property</code> and <code class="highlighter-rouge">description</code>. You can add new instances of this transform to convert your custom DSL.</li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/PropertyToMethodTransform" target="_blank" title="API docs for GraphQL::Upgrader::PropertyToMethodTransform"><code>GraphQL::Upgrader::PropertyToMethodTransform</code></a> turns <code class="highlighter-rouge">property:</code> to <code class="highlighter-rouge">method:</code></li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/UnderscoreizeFieldNameTransform" target="_blank" title="API docs for GraphQL::Upgrader::UnderscoreizeFieldNameTransform"><code>GraphQL::Upgrader::UnderscoreizeFieldNameTransform</code></a> converts field names to underscore-case. <strong>NOTE</strong> that this conversion may be <em>wrong</em> in the case of <code class="highlighter-rouge">bodyHTML =&gt; body_html</code>. When you find it is wrong, manually revert it and preserve the camel-case field name.</li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/ResolveProcToMethodTransform" target="_blank" title="API docs for GraphQL::Upgrader::ResolveProcToMethodTransform"><code>GraphQL::Upgrader::ResolveProcToMethodTransform</code></a> converts <code class="highlighter-rouge">resolve -&gt; { ... }</code> to <code class="highlighter-rouge">def {field_name} ... </code> method definitions</li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/UpdateMethodSignatureTransform" target="_blank" title="API docs for GraphQL::Upgrader::UpdateMethodSignatureTransform"><code>GraphQL::Upgrader::UpdateMethodSignatureTransform</code></a> converts the type name to the new syntax, and adds <code class="highlighter-rouge">null:</code>/<code class="highlighter-rouge">required:</code> to the method signature</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/RemoveNewlinesTransform" target="_blank" title="API docs for GraphQL::Upgrader::RemoveNewlinesTransform"><code>GraphQL::Upgrader::RemoveNewlinesTransform</code></a> removes newlines from field definitions to normalize them</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/PositionalTypeArgTransform" target="_blank" title="API docs for GraphQL::Upgrader::PositionalTypeArgTransform"><code>GraphQL::Upgrader::PositionalTypeArgTransform</code></a> moves <code class="highlighter-rouge">type X</code> from the <code class="highlighter-rouge">do ... end</code> block into a positional argument, to normalize the definition</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/ConfigurationToKwargTransform" target="_blank" title="API docs for GraphQL::Upgrader::ConfigurationToKwargTransform"><code>GraphQL::Upgrader::ConfigurationToKwargTransform</code></a> moves a <code class="highlighter-rouge">do ... end</code> configuration to a keyword argument. By default, this is used for <code class="highlighter-rouge">property</code> and <code class="highlighter-rouge">description</code>. You can add new instances of this transform to convert your custom DSL.</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/PropertyToMethodTransform" target="_blank" title="API docs for GraphQL::Upgrader::PropertyToMethodTransform"><code>GraphQL::Upgrader::PropertyToMethodTransform</code></a> turns <code class="highlighter-rouge">property:</code> to <code class="highlighter-rouge">method:</code></li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/UnderscoreizeFieldNameTransform" target="_blank" title="API docs for GraphQL::Upgrader::UnderscoreizeFieldNameTransform"><code>GraphQL::Upgrader::UnderscoreizeFieldNameTransform</code></a> converts field names to underscore-case. <strong>NOTE</strong> that this conversion may be <em>wrong</em> in the case of <code class="highlighter-rouge">bodyHTML =&gt; body_html</code>. When you find it is wrong, manually revert it and preserve the camel-case field name.</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/ResolveProcToMethodTransform" target="_blank" title="API docs for GraphQL::Upgrader::ResolveProcToMethodTransform"><code>GraphQL::Upgrader::ResolveProcToMethodTransform</code></a> converts <code class="highlighter-rouge">resolve -&gt; { ... }</code> to <code class="highlighter-rouge">def {field_name} ... </code> method definitions</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/UpdateMethodSignatureTransform" target="_blank" title="API docs for GraphQL::Upgrader::UpdateMethodSignatureTransform"><code>GraphQL::Upgrader::UpdateMethodSignatureTransform</code></a> converts the type name to the new syntax, and adds <code class="highlighter-rouge">null:</code>/<code class="highlighter-rouge">required:</code> to the method signature</li>
 </ul>
 
-<p>Clean-up transforms (<a href="/api-doc/1.8.11/GraphQL/Upgrader/Member/DEFAULT_CLEAN_UP_TRANSFORMS" target="_blank" title="API docs for GraphQL::Upgrader::Member::DEFAULT_CLEAN_UP_TRANSFORMS"><code>GraphQL::Upgrader::Member::DEFAULT_CLEAN_UP_TRANSFORMS</code></a>):</p>
+<p>Clean-up transforms (<a href="/api-doc/1.10.6/GraphQL/Upgrader/Member/DEFAULT_CLEAN_UP_TRANSFORMS" target="_blank" title="API docs for GraphQL::Upgrader::Member::DEFAULT_CLEAN_UP_TRANSFORMS"><code>GraphQL::Upgrader::Member::DEFAULT_CLEAN_UP_TRANSFORMS</code></a>):</p>
 
 <ul>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/RemoveExcessWhitespaceTransform" target="_blank" title="API docs for GraphQL::Upgrader::RemoveExcessWhitespaceTransform"><code>GraphQL::Upgrader::RemoveExcessWhitespaceTransform</code></a> removes redundant newlines</li>
-  <li><a href="/api-doc/1.8.11/GraphQL/Upgrader/RemoveEmptyBlocksTransform" target="_blank" title="API docs for GraphQL::Upgrader::RemoveEmptyBlocksTransform"><code>GraphQL::Upgrader::RemoveEmptyBlocksTransform</code></a> removes <code class="highlighter-rouge">do end</code> with nothing inside them</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/RemoveExcessWhitespaceTransform" target="_blank" title="API docs for GraphQL::Upgrader::RemoveExcessWhitespaceTransform"><code>GraphQL::Upgrader::RemoveExcessWhitespaceTransform</code></a> removes redundant newlines</li>
+  <li><a href="/api-doc/1.10.6/GraphQL/Upgrader/RemoveEmptyBlocksTransform" target="_blank" title="API docs for GraphQL::Upgrader::RemoveEmptyBlocksTransform"><code>GraphQL::Upgrader::RemoveEmptyBlocksTransform</code></a> removes <code class="highlighter-rouge">do end</code> with nothing inside them</li>
 </ul>
 
 <h2 id="roadmap">Roadmap</h2>
@@ -358,12 +353,12 @@
   </li>
   <li>graphql 1.9:
     <ul>
-      <li>☐ Update all GraphQL-Ruby docs to reflect this new API</li>
+      <li>☑ Update all GraphQL-Ruby docs to reflect this new API</li>
     </ul>
   </li>
   <li>graphql 1.10:
     <ul>
-      <li>☐ Begin sunsetting <code class="highlighter-rouge">.define</code>: isolate it in its own module</li>
+      <li>☑ Begin sunsetting <code class="highlighter-rouge">.define</code></li>
     </ul>
   </li>
   <li>graphql 2.0:
@@ -390,13 +385,13 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>(Implemented in <a href="/api-doc/1.8.11/GraphQL/Schema/Member" target="_blank" title="API docs for GraphQL::Schema::Member"><code>GraphQL::Schema::Member</code></a>).</p>
+<p>(Implemented in <a href="/api-doc/1.10.6/GraphQL/Schema/Member" target="_blank" title="API docs for GraphQL::Schema::Member"><code>GraphQL::Schema::Member</code></a>).</p>
 
 </div>
 <p class="guide-footer">
   Suggestion, improvement, or correction?
   <a href="https://github.com/rmosolgo/graphql-ruby/edit/master/guides/schema/class_based_api.md">Edit this file</a> or
-  <a href="https://github.com/rmosolgo/graphql-ruby/issues/new?title=Guide: Class-based API">report an issue</a>.
+  <a href="https://github.com/rmosolgo/graphql-ruby/issues/new?title=Guide: Class-based API Migration">report an issue</a>.
 </p>
 <script>
   // Find headers with IDs and wrap their text in `<a href=></a>`

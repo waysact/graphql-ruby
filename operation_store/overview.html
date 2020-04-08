@@ -19,10 +19,10 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.8.11/">API</a>
+          <a href="/api-doc/1.10.6/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
-          <a href="http://graphql.pro">Upgrade to Pro</a>
+          <a href="https://graphql.pro">Upgrade to Pro</a>
           <input
             class="search-input"
             onkeyup="GraphQLRubySearch.run(this)"
@@ -45,19 +45,18 @@
 </p>
 
 
-
   <div class="pro-header">
     <p>
       <strong>⚡️ Pro Feature ⚡️</strong>
       <span style="font-style: italic;">
-        This feature is bundled with <a href="http://graphql.pro">GraphQL-Pro</a>.
+        This feature is bundled with <a href="https://graphql.pro">GraphQL-Pro</a>.
       </span>
     </p>
   </div>
 
 <h1 class="guide-header">Overview</h1>
 <div class="guide-container">
-  <p><code class="highlighter-rouge">GraphQL::Pro::OperationStore</code> uses <code class="highlighter-rouge">ActiveRecord</code> and <code class="highlighter-rouge">Rack</code> to maintain a normalized, deduplicated database of <em>persisted queries</em> for your GraphQL system.</p>
+  <p><code class="highlighter-rouge">GraphQL::Pro::OperationStore</code> uses <code class="highlighter-rouge">Rack</code> and a storage backend (<a href="/operation_store/active_record_backend">ActiveRecord</a> or <a href="/operation_store/active_record_backend">Redis</a>) to maintain a normalized, deduplicated database of <em>persisted queries</em> for your GraphQL system.</p>
 
 <p>In this guide, you’ll find:</p>
 

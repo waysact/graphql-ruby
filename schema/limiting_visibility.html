@@ -19,10 +19,10 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.8.11/">API</a>
+          <a href="/api-doc/1.10.6/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
-          <a href="http://graphql.pro">Upgrade to Pro</a>
+          <a href="https://graphql.pro">Upgrade to Pro</a>
           <input
             class="search-input"
             onkeyup="GraphQLRubySearch.run(this)"
@@ -45,7 +45,6 @@
 </p>
 
 
-
 <h1 class="guide-header">Limiting Visibility</h1>
 <div class="guide-container">
   <p>Sometimes, you want to hide schema elements from some users. For example:</p>
@@ -55,7 +54,7 @@
   <li>some elements require higher permissions</li>
 </ul>
 
-<p>If you only want to limit <em>access</em> to these fields, consider using <a href="/fields/instrumentation">field instrumentation</a> to check objects at runtime or <a href="/queries/analysis">query analyzers</a> to check queries before running them.</p>
+<p>If you only want to limit <em>access</em> to these fields, consider using the <a href="/authorization/overview">authorization framework</a>.</p>
 
 <p>If you want to <em>completely hide</em> some fields, types, enum values or arguments, read on!</p>
 
@@ -93,10 +92,10 @@
 <p>The <code class="highlighter-rouge">schema_member</code> may be any of:</p>
 
 <ul>
-  <li>Type (<a href="/api-doc/1.8.11/GraphQL/BaseType" target="_blank" title="API docs for GraphQL::BaseType"><code>GraphQL::BaseType</code></a> and subclasses)</li>
-  <li>Field (<a href="/api-doc/1.8.11/GraphQL/Field" target="_blank" title="API docs for GraphQL::Field"><code>GraphQL::Field</code></a>)</li>
-  <li>Argument (<a href="/api-doc/1.8.11/GraphQL/Argument" target="_blank" title="API docs for GraphQL::Argument"><code>GraphQL::Argument</code></a>)</li>
-  <li>Enum value (<a href="/api-doc/1.8.11/GraphQL/EnumType/EnumValue" target="_blank" title="API docs for GraphQL::EnumType::EnumValue"><code>GraphQL::EnumType::EnumValue</code></a>)</li>
+  <li>Type (<a href="/api-doc/1.10.6/GraphQL/BaseType" target="_blank" title="API docs for GraphQL::BaseType"><code>GraphQL::BaseType</code></a> and subclasses)</li>
+  <li>Field (<a href="/api-doc/1.10.6/GraphQL/Field" target="_blank" title="API docs for GraphQL::Field"><code>GraphQL::Field</code></a>)</li>
+  <li>Argument (<a href="/api-doc/1.10.6/GraphQL/Argument" target="_blank" title="API docs for GraphQL::Argument"><code>GraphQL::Argument</code></a>)</li>
+  <li>Enum value (<a href="/api-doc/1.10.6/GraphQL/EnumType/EnumValue" target="_blank" title="API docs for GraphQL::EnumType::EnumValue"><code>GraphQL::EnumType::EnumValue</code></a>)</li>
 </ul>
 
 <h2 id="use-with-metadata">Use with Metadata</h2>
@@ -112,7 +111,7 @@
 
 <h2 id="printing-a-filtered-schema">Printing a Filtered Schema</h2>
 
-<p>You can see how filters will be applied to the schema by printing the schema with that filter. <a href="/api-doc/1.8.11/GraphQL/Schema#to_definition-instance_method" target="_blank" title="API docs for GraphQL::Schema#to_definition"><code>GraphQL::Schema#to_definition</code></a> accepts <code class="highlighter-rouge">only:</code> and <code class="highlighter-rouge">except:</code> options.</p>
+<p>You can see how filters will be applied to the schema by printing the schema with that filter. <a href="/api-doc/1.10.6/GraphQL/Schema#to_definition-instance_method" target="_blank" title="API docs for GraphQL::Schema#to_definition"><code>GraphQL::Schema#to_definition</code></a> accepts <code class="highlighter-rouge">only:</code> and <code class="highlighter-rouge">except:</code> options.</p>
 
 <p>For example, to see how the schema looks to a specific user:</p>
 

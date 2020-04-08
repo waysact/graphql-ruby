@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
-    <meta http-equiv="refresh" content="1;url=/api-doc/1.8.11/GraphQL/Subscriptions/ActionCableSubscriptions" />
+    <meta http-equiv="refresh" content="1;url=/api-doc/1.10.6/GraphQL/Subscriptions/ActionCableSubscriptions" />
   </head>
   <body>
     <p>Class: GraphQL::Subscriptions::ActionCableSubscriptions &lt; GraphQL::S…
@@ -14,7 +14,7 @@ reload context when re-delivering the subscription. (see
 Query#subscription_update?) 
 Examples:
     <h1 id="adding-actioncablesubscriptions-to-your-schema">Adding ActionCableSubscriptions to your schema</h1>
-    <p>MySchema = GraphQL::Schema.define do</p>
+    <p>class MySchema &lt; GraphQL::Schema</p>
     <h1>…</h1>
     <p>use GraphQL::Subscriptions::ActionCableSubscriptions
 end</p>
@@ -27,8 +27,10 @@ def execute(data)
 query = data[“query”]
 variables = ensure_hash(data[“variables”])
 operation_name = data[“operationName”]
-context = {
-current_user: current_user,</p>
+context = {</p>
+    <h1 id="re-implement-whatever-context-methods-you-need">Re-implement whatever context methods you need</h1>
+    <h1 id="in-this-channel-or-applicationcablechannel">in this channel or ApplicationCable::Channel</h1>
+    <h1 id="current_user-current_user">current_user: current_user,</h1>
     <h1 id="make-sure-the-channel-is-in-the-context">Make sure the channel is in the context</h1>
     <p>channel: self,
 }
@@ -39,13 +41,13 @@ variables: variables,
 operation_name: operation_name
 })
 payload = {
-result: result.subscription? ? { data: nil } : result.to_h,
+result: result.to_h,
 more: result.subscription?,
 }</p>
     <h1 id="track-the-subscription-here-so-we-can-remove-it">Track the subscription here so we can remove it</h1>
     <h1 id="on-unsubscribe">on unsubscribe.</h1>
     <p>if result.context[:subscription_id]
-@subscription_ids « context[:subscription_id]
+@subscription_ids « result.context[:subscription_id]
 end
 transmit(payload)
 end

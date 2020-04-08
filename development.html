@@ -19,10 +19,10 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.8.11/">API</a>
+          <a href="/api-doc/1.10.6/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
-          <a href="http://graphql.pro">Upgrade to Pro</a>
+          <a href="https://graphql.pro">Upgrade to Pro</a>
           <input
             class="search-input"
             onkeyup="GraphQLRubySearch.run(this)"
@@ -43,7 +43,6 @@
    &raquo; <a href="/guides#other-guides">Other</a>
   &raquo; Development
 </p>
-
 
 
 <h1 class="guide-header">Development</h1>
@@ -69,9 +68,9 @@
 <p>Then, install the dependencies:</p>
 
 <ul>
-  <li>Install SQLite3 and MongoDB (eg, <code class="highlighter-rouge">brew install sqlite &amp;&amp; brew install mongodb</code>)</li>
+  <li>Install SQLite3 and MongoDB (eg, <code class="highlighter-rouge">brew install sqlite &amp;&amp; brew tap mongodb/brew &amp;&amp; brew install mongodb-community</code>)</li>
   <li><code class="highlighter-rouge">bundle install</code></li>
-  <li>Optional: <a href="http://www.colm.net/open-source/ragel/">Ragel</a> is required to build the lexer</li>
+  <li>Optional: <a href="https://www.colm.net/open-source/ragel/">Ragel</a> is required to build the lexer</li>
 </ul>
 
 <h3 id="running-the-tests">Running the Tests</h3>
@@ -155,7 +154,7 @@ BUNDLE_GEMFILE=gemfiles/rails_5.1.gemfile bundle exec rake test TEST=spec/integr
 
 <h3 id="debugging-with-pry">Debugging with Pry</h3>
 
-<p><a href="http://pryrepl.org/"><code class="highlighter-rouge">pry</code></a> is included with GraphQL-Ruby’s development setup to help with debugging.</p>
+<p><a href="https://pryrepl.org/"><code class="highlighter-rouge">pry</code></a> is included with GraphQL-Ruby’s development setup to help with debugging.</p>
 
 <p>To pause execution in Ruby code, add:</p>
 
@@ -213,11 +212,33 @@ rake bench:validate        <span class="c"># Benchmark validation of several que
   <li><code class="highlighter-rouge">require</code> those <code class="highlighter-rouge">.rb</code> files in GraphQL-Ruby</li>
 </ul>
 
-<p>To update the lexer or parser, you should update their corresponding <em>definitions</em> (<code class="highlighter-rouge">lexer.rl</code> or <code class="highlighter-rouge">parser.y</code>). Then, you can run <code class="highlighter-rouge">bundle exec build_parser</code> to re-generate the <code class="highlighter-rouge">.rb</code> files.</p>
+<p>To update the lexer or parser, you should update their corresponding <em>definitions</em> (<code class="highlighter-rouge">lexer.rl</code> or <code class="highlighter-rouge">parser.y</code>). Then, you can run <code class="highlighter-rouge">bundle exec rake build_parser</code> to re-generate the <code class="highlighter-rouge">.rb</code> files.</p>
 
 <p>You will need Ragel to build the lexer (see above).</p>
 
 <p>If you start <strong>guard</strong> (<code class="highlighter-rouge">bundle exec guard</code>), the <code class="highlighter-rouge">.rb</code> files will be rebuilt whenever the definition files are modified.</p>
+
+<h4 id="install-ragel-and-colm-on-a-mac">Install Ragel and Colm on a Mac</h4>
+
+<p>GraphQL Ruby requires Ragel 7.0.0.9 which is not available on Homebrew. To install it, you might have to download it from source.</p>
+
+<p>This is not meant to be a step by step guide and will likely not work as the documentation ages.</p>
+
+<p>Download colm from http://www.colm.net/files/colm/colm-0.13.0.4.tar.gz
+Download ragel from http://www.colm.net/files/ragel/ragel-7.0.0.9.tar.gz</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># In colm directory</span>
+<span class="nb">cat </span>README <span class="c"># for install instructions</span>
+<span class="c"># The author who added this documentation succeeded with these steps</span>
+./configure
+./make
+./make <span class="nb">install</span>
+
+<span class="c"># After installing colm, in ragel directory</span>
+./configure
+./make
+./make <span class="nb">install</span>
+</code></pre></div></div>
 
 <h3 id="website">Website</h3>
 
@@ -256,7 +277,7 @@ rake bench:validate        <span class="c"># Benchmark validation of several que
 <p>Then, check them out locally:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bundle exec rake site:serve
-# then visit localhost:4000/api-doc/1.8.0/
+# then visit http://localhost:4000/api-doc/1.8.0/
 </code></pre></div></div>
 
 <p>Then, publish them as part of the whole site:</p>
@@ -305,7 +326,12 @@ s post, <a href="https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e">“Why 
   </li>
   <li>Update <code class="highlighter-rouge">lib/graphql/version.rb</code> with the new version number</li>
   <li>Commit changes to master</li>
-  <li>Release to RubyGems with <code class="highlighter-rouge">bundle exec rake release</code></li>
+  <li>Release to RubyGems
+    <ul>
+      <li>Without 2FA 😢: <code class="highlighter-rouge">bundle exec rake release</code></li>
+      <li>With 2FA 😎: <code class="highlighter-rouge">bundle exec rake build</code> then <code class="highlighter-rouge">gem push pkg/graphql-&lt;version&gt;.gem</code>, <code class="highlighter-rouge">git tag v&lt;version&gt; &amp;&amp; git push v&lt;version&gt;</code></li>
+    </ul>
+  </li>
   <li>Update the website:
     <ul>
       <li>Generate new API docs with <code class="highlighter-rouge">bundle exec rake apidocs:gen_version[&lt;your.version.number&gt;]</code></li>

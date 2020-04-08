@@ -19,10 +19,10 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.8.11/">API</a>
+          <a href="/api-doc/1.10.6/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
-          <a href="http://graphql.pro">Upgrade to Pro</a>
+          <a href="https://graphql.pro">Upgrade to Pro</a>
           <input
             class="search-input"
             onkeyup="GraphQLRubySearch.run(this)"
@@ -43,7 +43,6 @@
    &raquo; <a href="/guides#fields-guides">Fields</a>
   &raquo; Introduction
 </p>
-
 
 
 <h1 class="guide-header">Introduction</h1>
@@ -149,6 +148,21 @@
   <span class="ss">hash_key: </span><span class="s2">"allPlayers"</span>
 </code></pre></div></div>
 
+<p>To pass-through the underlying object without calling a method on it, you can use <code class="highlighter-rouge">method: :itself</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">field</span> <span class="ss">:player</span><span class="p">,</span> <span class="no">User</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span>
+  <span class="ss">method: :itself</span>
+</code></pre></div></div>
+
+<p>This is equivalent to:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">field</span> <span class="ss">:player</span><span class="p">,</span> <span class="no">User</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+
+<span class="k">def</span> <span class="nf">player</span>
+  <span class="n">object</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
 <p>If you don’t want to delegate to the underlying object, you can define a method for each field:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Use the custom method below to resolve this field</span>
@@ -178,6 +192,25 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
+<p>As the examples above show, by default the custom method name must match the field name. If you want to use a different custom method, the <code class="highlighter-rouge">resolver_method</code> option is available:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Use the custom method with a non-default name below to resolve this field</span>
+<span class="n">field</span> <span class="ss">:total_games_played</span><span class="p">,</span> <span class="no">Integer</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">resolver_method: :games_played</span>
+
+<span class="k">def</span> <span class="nf">games_played</span>
+  <span class="n">object</span><span class="p">.</span><span class="nf">games</span><span class="p">.</span><span class="nf">count</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">resolver_method</code> has two main use cases:</p>
+
+<ol>
+  <li>resolver re-use between multiple fields</li>
+  <li>dealing with method conflicts (specifically if you have fields named <code class="highlighter-rouge">context</code> or <code class="highlighter-rouge">object</code>)</li>
+</ol>
+
+<p>Note that <code class="highlighter-rouge">resolver_method</code> <em>cannot</em> be used in combination with <code class="highlighter-rouge">method</code> or <code class="highlighter-rouge">hash_key</code>.</p>
+
 <h3 id="field-arguments">Field Arguments</h3>
 
 <p><em>Arguments</em> allow fields to take input to their resolution. For example:</p>
@@ -197,10 +230,12 @@
 <p>A few <code class="highlighter-rouge">extras</code> are available:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">irep_node</code></li>
   <li><code class="highlighter-rouge">ast_node</code></li>
-  <li><code class="highlighter-rouge">parent</code>, the parent field context</li>
+  <li><code class="highlighter-rouge">graphql_name</code> (the field’s name)</li>
+  <li><code class="highlighter-rouge">owner</code> (the type that this field belongs to)</li>
+  <li><code class="highlighter-rouge">lookahead</code> (see <a href="/queries/lookahead">Lookahead</a>)</li>
   <li><code class="highlighter-rouge">execution_errors</code>, whose <code class="highlighter-rouge">#add(err_or_msg)</code> method should be used for adding errors</li>
+  <li>Custom extras, see below</li>
 </ul>
 
 <p>To inject them into your field method, first, add the <code class="highlighter-rouge">extras:</code> option to the field definition:</p>
@@ -221,7 +256,7 @@
 
 <h3 id="field-parameter-default-values">Field Parameter Default Values</h3>
 
-<p>The field method requires you to pass <code class="highlighter-rouge">null:</code> keyword argument to determine whether the field is nullable or not. Another field you may want to overrid is <code class="highlighter-rouge">camelize</code>, which is <code class="highlighter-rouge">true</code> by default. You can override this behavior by adding a custom field.</p>
+<p>The field method requires you to pass <code class="highlighter-rouge">null:</code> keyword argument to determine whether the field is nullable or not. For another field you may want to override <code class="highlighter-rouge">camelize</code>, which is <code class="highlighter-rouge">true</code> by default. You can override this behavior by adding a custom field with overwritten <code class="highlighter-rouge">camelize</code> option, which is <code class="highlighter-rouge">true</code> by default.</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CustomField</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span><span class="o">::</span><span class="no">Field</span>
   <span class="c1"># Add `null: false` and `camelize: false` which provide default values</span>
