@@ -60,7 +60,11 @@ module GraphQL
 
             # HACK to allow subscriptions to return an initial response, a
             # feature available in more recent GraphQL versions.
-            result
+            if result.nil?
+              ctx.skip
+            else
+              result
+            end
           elsif ctx.irep_node.subscription_topic == ctx.query.subscription_topic
             # The root object is _already_ the subscription update:
             if obj.is_a?(GraphQL::Schema::Object)
